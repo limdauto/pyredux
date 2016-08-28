@@ -19,7 +19,7 @@ Some tips:
 - There is always only one state object in the application
 - I like to think of the idea behind redux as an one-liner as follow: 
 
-``` 
+```python 
 new_state = reduce(lambda f: f(state), reducers, initial_state)
 ```
 
@@ -27,7 +27,7 @@ new_state = reduce(lambda f: f(state), reducers, initial_state)
 
 The base Action class is just a subclass of `namedtuple`, so you can create an action using the `namedtuple` syntax
 
-```
+```python
 from redux.core import Action
 
 AddSitups = Action('Add situps', ['num'])
@@ -40,7 +40,7 @@ AddPushups = Action('Add pushups', ['num'])
 
 A state object could use any data structure to store its information. In the following example, the global state object of the application contains 2 lists.
 
-```
+```python
 ReduxState = namedtuple('My Redux Gym Tracker', ['situps', 'pushups'])
 ReduxState.__new__.__defaults__ = [], []
 ```
@@ -49,8 +49,8 @@ ReduxState.__new__.__defaults__ = [], []
 
 Reducer takes the current state object, apply an action on it and return the new state.
 
-```
-def gymApp(state: ReduxState, action: Action) -> ReduxState:
+```python
+def gym_app(state: ReduxState, action: Action) -> ReduxState:
     return ReduxState(
         situps = situps(state.situps, action),
         pushups = pushups(state.pushups, action)
@@ -68,17 +68,17 @@ def pushups(state: list, action: Action) -> list:
  
 There is also an utility to combine reducers together
 
-```
+```python
 from redux.utils import combine_reducers
-gymApp = combine_reducers(situps, pushups)
+gym_app = combine_reducers(situps, pushups)
 ```
 
 Or you can use a BDD-style root reducer object to combine reducers together
 
-```
+```python
 from redux.core import Reducer
-gymApp = Reducer(initial_state = ReduxState())
-gymApp
+gym_app = Reducer(initial_state = ReduxState())
+gym_app
 .when(AddSitups).then(situps)
 .when(AddPushups).then(pushups)
 ```
@@ -86,7 +86,7 @@ gymApp
 Since Python doesn't have `switch` statement out of the box, this approach gives you the ability to splitting reducers into even smaller functions without sacrificing readability
 
 ```
-gymApp
+gym_app
 .when(AddSitups).then(process_new_situps)
 .when(AddPushups).then(process_new_pushups)
 ```
@@ -97,44 +97,44 @@ Store is the object that bring actions and reducers together.
 
 - Create a store out of the `root_reducer`, i.e. the gymApp from the example above
 
-```
+```python
 from redux.utils import create_store
 store = create_store(root_reducer, initial_state=None)
 ```
 
 - To access the current state tree
 
-```
+```python
 store.getState()
 ```
 
 - To dispatch an action object
 
-```
+```python
 store.dispatch(action)
 ```
 
 - Slightly different from the JavaScript implementation, you can dispatch an action creator `callable` out of the box without the need to enable extra middleware
 
-```
+```python
 store.dispatch(lambda: action)
 ```
 
 - After an action is dispatched, you can optionally invoke callback by registering it as a listener. This global listener will be triggered every time an action is dispatched. The state may or may not have been modified at that time.
 
-```
+```python
 store.subscribe(listener)
 ```
 
 - Python-redux also allows the possiblity to register a local listener for every action. 
 
-```
+```python
 store.subscribe(log_pushups, to=AddPushups)
 ```
 
 - There is also a low-level api to access and replace reducer
 
-```
+```python
 store.get_reducer()
 store.replace_reducer(next_reducer)
 ```
@@ -145,7 +145,7 @@ store.replace_reducer(next_reducer)
 
 Middlewares sit between when an action is dispatched and when it reaches the reducers. To enable the use of middlewares:
 
-```
+```python
 from redux.middlewares import logger, crash_reporter
 create_store(root_reducer, middlewares=[logger, crash_reporter])
 ```
