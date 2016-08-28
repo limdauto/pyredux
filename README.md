@@ -2,7 +2,7 @@
 
 A port of JavaScript's [redux](https://github.com/reactjs/redux) to Python, with some minor modifications, to make state management easier. The project's main goal is to provide:
 
-- A a predictable state container for a Python application, including and especially server-side
+- A predictable state container for a Python application, including and especially server-side
 - Clean Pythonic interface
 - First-class support for asynchronous action through asyncio
 
@@ -17,7 +17,7 @@ At its bare minimum, a redux application has 4 components:
 
 Some tips:
 - There is always only one state object in the application
-- I like to think of reduce as an one-liner as follow: 
+- I like to think of the idea behind redux as an one-liner as follow: 
 
 ``` 
 new_state = reduce(lambda f: f(state), reducers, initial_state)
